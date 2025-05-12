@@ -1,0 +1,6 @@
+@AuthECapp_HostAddress = http://localhost:5130
+
+GET {{AuthECapp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

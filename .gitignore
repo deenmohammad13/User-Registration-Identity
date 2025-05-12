@@ -1,0 +1,63 @@
+# .NET build artifacts
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.dbmdl
+*.vsp
+*.vspx
+*.vspscc
+*.vssscc
+*.ncb
+*.sdf
+*.cache
+*.pdb
+
+# Others
+*.log
+*.tlog
+*.tmp
+*.bak
+*.orig
+
+# IIS Express
+.vsconfig
+*.vsidx
+
+# Rider IDE
+.idea/
+
+# Dotnet generated
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.deps.json
+
+# Optional: ASP.NET Core
+appsettings.Development.json
+appsettings.Local.json
+
+# Optional: Secrets
+secrets.json
+
+# Optional: node_modules (if using JS tools)
+node_modules/
+
+# Optional: Environment files
+.env
+
+# Ignore test results
+TestResults/
+
+# Ignore coverage results
+coverage/
+
+# Ignore publish folder
+publish/
