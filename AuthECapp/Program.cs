@@ -14,39 +14,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-
-
 builder.Services.AddSwaggerExplorer()
                 .DependencyInjectons(builder.Configuration)
                 .AddIdentityHandlersAndStores()
                 .ConfigureIdentityOptions()
                 .AddIdentityAuthenticationAndAuthorization(builder.Configuration);
 
-
-
-// services and configuration for authentication
- 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.ConfigureSwaggerExplorer()
+    .ConfigureCORS(builder.Configuration)
+    .AddIdentityAuthMiddlewares(); ;
 
 app.UseHttpsRedirection();
-
-
-//Asp.NET Middlewares
-# region configure CORS
-app.UseCors();
-#endregion
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllers();
 
