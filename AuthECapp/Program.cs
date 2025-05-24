@@ -8,51 +8,25 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using AuthECapp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-//Add service for Identity
-builder.Services.AddIdentityApiEndpoints<AppUser>()
-    .AddEntityFrameworkStores<AppDBContext>();
 
-//Customize Validation
-builder.Services.Configure<IdentityOptions>(Options =>
-    {
-        Options.Password.RequireDigit = false;
-        Options.Password.RequireUppercase = false;
-        Options.Password.RequireLowercase = false;
-        Options.User.RequireUniqueEmail = true;
-    });
+builder.Services.AddSwaggerExplorer()
+                .DependencyInjectons(builder.Configuration)
+                .AddIdentityHandlersAndStores()
+                .ConfigureIdentityOptions()
+                .AddIdentityAuthenticationAndAuthorization(builder.Configuration);
 
-// Dependency Injection
-builder.Services.AddDbContext<AppDBContext>(
-    Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+
 
 // services and configuration for authentication
-builder.Services.AddAuthentication(x =>                           
-{
-    x.DefaultAuthenticateScheme =                             //authentication options     
-    x.DefaultChallengeScheme =
-    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; //used as the fallback default scheme for all other defaults
-
-})
-    .AddJwtBearer(y =>                        //register jwt scheme with necessary configuration
-    {
-        y.SaveToken = false;
-        y.TokenValidationParameters = new TokenValidationParameters     // JWT Validation
-        {
-            ValidateIssuer = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:JWTSecret"]!))
-        };
-    });
+ 
 
 
 var app = builder.Build();
