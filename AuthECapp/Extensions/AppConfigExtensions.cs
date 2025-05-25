@@ -1,4 +1,6 @@
-﻿namespace AuthECapp.Extensions
+﻿using AuthECapp.Models;
+
+namespace AuthECapp.Extensions
 {
     public static class AppConfigExtensions
     {
@@ -6,6 +8,12 @@
         {
             app.UseCors();
             return app;
+        }
+
+        public static IServiceCollection AppConfig(this IServiceCollection services, IConfiguration config)
+        {
+            services.Configure<AppSettings>(config.GetSection("AppSettings"));
+            return services;
         }
     }
 }
