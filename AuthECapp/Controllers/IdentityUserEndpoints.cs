@@ -15,6 +15,10 @@ namespace AuthECapp.Controllers
         public string Email { get; set; }
         public string Password { get; set; }
         public string FullName { get; set; }
+        public string Gender { get; set; }
+        public string Role { get; set; }
+        public int Age { get; set; }
+        public int? LibraryID { get; set; }
     }
 
     public class LoginModel
@@ -40,10 +44,14 @@ namespace AuthECapp.Controllers
                         {
                             UserName = userRegistrationModel.Email, //assign email as username
                             Email = userRegistrationModel.Email,
-                            FullName = userRegistrationModel.FullName
+                            FullName = userRegistrationModel.FullName,
+                            Gender = userRegistrationModel.Gender,
+                            DOB = DateOnly.FromDateTime(DateTime.Now.AddYears(-userRegistrationModel.Age)),
+                            LibraryID = userRegistrationModel.LibraryID
                         };
 
                         var result = await userManager.CreateAsync(user, userRegistrationModel.Password);
+                        await userManager.AddToRoleAsync(user,userRegistrationModel.Role);
                         if (result.Succeeded)
                             return Results.Ok(result);
                         else

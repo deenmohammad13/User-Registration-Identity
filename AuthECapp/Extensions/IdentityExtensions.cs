@@ -12,6 +12,7 @@ namespace AuthECapp.Extensions
         public static IServiceCollection AddIdentityHandlersAndStores(this IServiceCollection services)  //Add service for Identity
         {
             services.AddIdentityApiEndpoints<AppUser>()
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<AppDBContext>();
             return services;
         }
