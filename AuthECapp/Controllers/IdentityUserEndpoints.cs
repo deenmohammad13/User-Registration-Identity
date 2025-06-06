@@ -66,15 +66,23 @@ namespace AuthECapp.Controllers
                     var user = await userManager.FindByEmailAsync(loginModel.Email);    //verify by email
                     if (user != null && await userManager.CheckPasswordAsync(user, loginModel.Password))  //check the password and genarate the jwt
                     {
+                        var roles = await userManager.GetRolesAsync(user);
                         var signInKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(appSettings.Value.JWTSecret));   // save the secret key
 
+                        ClaimsIdentity claims = new ClaimsIdentity(new Claim[]
+                        {
+                            new Claim("UserID", user.Id.ToString()),
+                            new Claim("Gender", user.Gender.ToString()),
+                            new Claim("Age", (DateTime.Now.Year - user.DOB.Year).ToString()),
+                            new Claim(ClaimTypes.Role, roles.First())
+                        });
+                        if (user.LibraryID != null)
+                        claims.AddClaim(new Claim("LibraryID", user.LibraryID.ToString()!));
+
                         var tokenDescriptor = new SecurityTokenDescriptor   // add information or claim to the payload
                         {
-                            Subject = new ClaimsIdentity(new Claim[]
-                            {
-                            new Claim("UserID", user.Id.ToString())     // customize claim for payload, can be add more
-                            }),
+                            Subject = claims,
 
                             Expires = DateTime.UtcNow.AddDays(10),    //expiration time for token
 
