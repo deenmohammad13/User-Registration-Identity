@@ -1,4 +1,5 @@
 ﻿using AuthECapp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,7 @@ namespace AuthECapp.Controllers
             return app;
         }
 
+        [AllowAnonymous]
         private static async Task<IResult> CreateUser(UserManager<AppUser> userManager,
                                 [FromBody] UserRegistrationModel userRegistrationModel)
                     {
@@ -48,6 +50,7 @@ namespace AuthECapp.Controllers
                             return Results.BadRequest(result);
                     }
 
+        [AllowAnonymous]
         private static async Task<IResult> SignIn(UserManager<AppUser> userManager,            //argument for managing user
                                                  [FromBody] LoginModel loginModel,
                                                  IOptions<AppSettings> appSettings)
@@ -62,7 +65,7 @@ namespace AuthECapp.Controllers
                         {
                             Subject = new ClaimsIdentity(new Claim[]
                             {
-                            new Claim("User Id", user.Id.ToString())     // customize claim for payload, can be add more
+                            new Claim("UserID", user.Id.ToString())     // customize claim for payload, can be add more
                             }),
 
                             Expires = DateTime.UtcNow.AddDays(10),    //expiration time for token

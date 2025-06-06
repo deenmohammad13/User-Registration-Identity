@@ -1,5 +1,6 @@
 ﻿using AuthECapp.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -29,23 +30,28 @@ namespace AuthECapp.Extensions
 
         public static IServiceCollection AddIdentityAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration config)
         {
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme =                                
-                x.DefaultChallengeScheme =
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; 
-
-            })
-                .AddJwtBearer(y =>                        //register jwt scheme with necessary configuration
-            {
-                y.SaveToken = false;
-                y.TokenValidationParameters = new TokenValidationParameters     // JWT Validation
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(y =>                        //register jwt scheme with necessary configuration
                 {
-                    ValidateIssuer = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]!))
-                };
-            });
+                    y.SaveToken = false;
+                    y.TokenValidationParameters = new TokenValidationParameters     // JWT Validation
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]!)),
+
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
+                });
+
+            services.AddAuthorization(options =>
+                {
+                    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
+                });
             return services;
         }
 
