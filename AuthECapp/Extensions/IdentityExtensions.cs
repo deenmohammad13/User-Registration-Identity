@@ -52,6 +52,11 @@ namespace AuthECapp.Extensions
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build();
+
+                    options.AddPolicy("HasLibraryID", policy => policy.RequireClaim("LibraryID"));
+                    options.AddPolicy("FemaleOnly", policy => policy.RequireClaim("Gender", "Female"));
+                    options.AddPolicy("Under10", policy => policy.RequireAssertion(
+                        context => Int32.Parse(context.User.Claims.First(x => x.Type == "Age").Value)<10));
                 });
             return services;
         }

@@ -84,7 +84,7 @@ namespace AuthECapp.Controllers
                         {
                             Subject = claims,
 
-                            Expires = DateTime.UtcNow.AddDays(10),    //expiration time for token
+                            Expires = DateTime.UtcNow.AddDays(30),    //expiration time for token
 
                             SigningCredentials = new SigningCredentials(signInKey,
                                 SecurityAlgorithms.HmacSha256)  //specify the security key and algorithm
